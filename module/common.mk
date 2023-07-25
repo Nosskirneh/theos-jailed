@@ -6,7 +6,9 @@ THEOS_JAILED_LIB := $(THEOS_JAILED_PATH)/lib
 # Shell scripts
 export MESSAGES := $(THEOS_JAILED_BIN)/messages.sh
 export STAGE := $(THEOS_JAILED_BIN)/stage.sh
-export INSERT_DYLIB := $(THEOS_JAILED_BIN)/insert_dylib
+export INSERT_DYLIB := $(THEOS_JAILED_BIN)/insert_dylib.sh
+export INSERT_DYLIB_MACOS := $(THEOS_JAILED_BIN)/insert_dylib_macos
+export INSERT_DYLIB_LINUX := $(THEOS_JAILED_BIN)/insert_dylib_linux
 export INFO_TEMPLATE := $(THEOS_JAILED_BIN)/info.txt
 export INFO_SCRIPT := $(THEOS_JAILED_BIN)/info.sh
 export IPA_SCRIPT := $(THEOS_JAILED_BIN)/ipa.sh
