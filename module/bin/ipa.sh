@@ -12,8 +12,8 @@ if [[ -d $RESOURCES_DIR ]]; then
 fi
 
 function change_bundle_id {
-	bundle_id=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$1")
-	/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID${bundle_id#$app_bundle_id}" "$1"
+	bundle_id=$(plister "$1" --key CFBundleIdentifier)
+	plister "$1" --key CFBundleIdentifier --value "${BUNDLE_ID}${bundle_id#$app_bundle_id}"
 }
 
 if [[ -n $BUNDLE_ID ]]; then
@@ -21,13 +21,12 @@ if [[ -n $BUNDLE_ID ]]; then
 	export -f change_bundle_id
 	export app_bundle_id
 	find "$appdir" -name "*.appex" -print0 | xargs -I {} -0 bash -c "change_bundle_id '{}/Info.plist'"
-	/usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID" "$info_plist"
+	plister "${info_plist}" --key CFBundleIdentifier --value "${BUNDLE_ID}"
 fi
 
 if [[ -n $DISPLAY_NAME ]]; then
 	log 2 "Setting display name"
-	/usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string" "$info_plist" 
-	/usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName $DISPLAY_NAME" "$info_plist" 
+	plister "${info_plist}" --key CFBundleDisplayName --value "${DISPLAY_NAME}"
 fi
 
 if [[ -f $RESOURCES_DIR/Info.plist ]]; then
@@ -52,7 +51,7 @@ for file in "${inject_files[@]}" "${copy_files[@]}"; do
 done
 
 log 3 "Injecting dependencies"
-app_binary="$appdir/$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$info_plist")"
+app_binary="${appdir}/$(plister "${info_plist}" --key CFBundleExecutable)"
 install_name_tool -add_rpath "@executable_path/$COPY_PATH" "$app_binary"
 for file in "${inject_files[@]}"; do
 	filename=$(basename "$file")
