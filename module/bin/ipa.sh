@@ -13,7 +13,7 @@ fi
 
 function change_bundle_id {
 	bundle_id=$(plister "$1" --key CFBundleIdentifier)
-	plister "$1" --key CFBundleIdentifier --value "${BUNDLE_ID}${bundle_id#$app_bundle_id}"
+	plister "$1" --key CFBundleIdentifier --value "${BUNDLE_ID}${bundle_id#$app_bundle_id}" --mode Set
 }
 
 if [[ -n $BUNDLE_ID ]]; then
@@ -21,12 +21,12 @@ if [[ -n $BUNDLE_ID ]]; then
 	export -f change_bundle_id
 	export app_bundle_id
 	find "$appdir" -name "*.appex" -print0 | xargs -I {} -0 bash -c "change_bundle_id '{}/Info.plist'"
-	plister "${info_plist}" --key CFBundleIdentifier --value "${BUNDLE_ID}"
+	plister "${info_plist}" --key CFBundleIdentifier --value "${BUNDLE_ID}" --mode Set
 fi
 
 if [[ -n $DISPLAY_NAME ]]; then
 	log 2 "Setting display name"
-	plister "${info_plist}" --key CFBundleDisplayName --value "${DISPLAY_NAME}"
+	plister "${info_plist}" --key CFBundleDisplayName --value "${DISPLAY_NAME}" --mode Set
 fi
 
 if [[ -f $RESOURCES_DIR/Info.plist ]]; then
